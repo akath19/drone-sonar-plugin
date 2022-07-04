@@ -1,8 +1,6 @@
 name: Publish Docker Image
 on: 
   push:
-    branches:
-      - 'master'
     tags:
       - 'v*'
 jobs:
@@ -28,9 +26,12 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         push: true
+    - name: Get Tag For Release
+      uses: battila7/get-version-action@v2
+      id: get_version
     - name: Release
       uses: elgohr/Github-Release-Action@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        title: Version ${{ steps.meta.output.tags }}
+        title: v${{ steps.get_version.outputs.version }}
