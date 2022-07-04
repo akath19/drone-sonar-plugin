@@ -14,16 +14,17 @@ type (
 		Host  string
 		Token string
 
-		Version        string
-		Branch         string
-		Sources        string
-		Timeout        string
-		Inclusions     string
-		Exclusions     string
-		Level          string
-		ShowProfiling  string
-		BranchAnalysis bool
-		UsingProperties bool
+		Version            string
+		Branch             string
+		Sources            string
+		Timeout            string
+		Inclusions         string
+		Exclusions         string
+		Level              string
+		ShowProfiling      string
+		BranchAnalysis     bool
+		UsingProperties    bool
+		PropertiesFilePath string
 	}
 	Plugin struct {
 		Config Config
@@ -50,15 +51,17 @@ func (p Plugin) Exec() error {
 			"-Dsonar.scm.provider=git",
 		}
 		args = append(args, argsParameter...)
+	} else {
+		if p.Config.PropertiesFilePath != "" {
+			args = append(args, "-Dproject.settings="+p.Config.PropertiesFilePath)
+		}
 	}
 
-
 	if p.Config.BranchAnalysis {
-		args = append(args, "-Dsonar.branch.name=" + p.Config.Branch)
+		args = append(args, "-Dsonar.branch.name="+p.Config.Branch)
 	}
 
 	cmd := exec.Command("sonar-scanner", args...)
-	// fmt.Printf("==> Executing: %s\n", strings.Join(cmd.Args, " "))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	fmt.Printf("==> Code Analysis Result:\n")

@@ -2,18 +2,21 @@ package main
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
 	"os"
+
+	"github.com/urfave/cli"
 )
 
-var build = "1" // build number set at compile time
+var majorVersion = "1"
+var minorVersion = "1"
+var patchVersion = "0"
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "Drone-Sonar-Plugin"
 	app.Usage = "Drone plugin to integrate with SonarQube."
 	app.Action = run
-	app.Version = fmt.Sprintf("1.0.%s", build)
+	app.Version = fmt.Sprintf("%s.%s.%s", majorVersion, minorVersion, patchVersion)
 	app.Flags = []cli.Flag{
 
 		cli.StringFlag{
@@ -92,6 +95,11 @@ func main() {
 			Usage:  "using sonar-project.properties",
 			EnvVar: "PLUGIN_USINGPROPERTIES",
 		},
+		cli.StringFlag{
+			Name:   "propertiesFilePath",
+			Usage:  "custom path for properties file",
+			EnvVar: "PLUGIN_PROPERTIESFILEPATH",
+		},
 	}
 
 	app.Run(os.Args)
@@ -105,17 +113,17 @@ func run(c *cli.Context) {
 			Host:  c.String("host"),
 			Token: c.String("token"),
 
-			Version:        c.String("ver"),
-			Branch:         c.String("branch"),
-			Timeout:        c.String("timeout"),
-			Sources:        c.String("sources"),
-			Inclusions:     c.String("inclusions"),
-			Exclusions:     c.String("exclusions"),
-			Level:          c.String("level"),
-			ShowProfiling:  c.String("showProfiling"),
-			BranchAnalysis: c.Bool("branchAnalysis"),
-			UsingProperties: c.Bool("usingProperties"),
-
+			Version:            c.String("ver"),
+			Branch:             c.String("branch"),
+			Timeout:            c.String("timeout"),
+			Sources:            c.String("sources"),
+			Inclusions:         c.String("inclusions"),
+			Exclusions:         c.String("exclusions"),
+			Level:              c.String("level"),
+			ShowProfiling:      c.String("showProfiling"),
+			BranchAnalysis:     c.Bool("branchAnalysis"),
+			UsingProperties:    c.Bool("usingProperties"),
+			PropertiesFilePath: c.String("propertiesFilePath"),
 		},
 	}
 
